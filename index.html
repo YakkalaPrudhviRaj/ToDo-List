@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>HTML Todo List || Major Project</title>
+    <link href="bootstrap-5.3.0-dist/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/fontawesome/fontawesome-free-6.2.1-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+        .card {
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: scale(1.02);
+        }
+        
+        .modal.fade .modal-dialog {
+            transform: translate(0, -50px);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .add-task-btn {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+        }
+        
+        .edit-icons i,
+        .delete-icon i {
+            font-size: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+        
+        .edit-icons i:hover {
+            color: #007bff;
+            transform: rotate(20deg);
+        }
+        
+        .delete-icon i:hover {
+            color: #dc3545;
+            transform: rotate(20deg);
+        }
+        
+        .list-group-item {
+            border: none;
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+            font-size: 18px;
+            transition: background-color 0.3s, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: left top;
+        }
+        
+        .list-group-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .list-group-item+.list-group-item {
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .list-group-item.animate {
+            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes bounceIn {
+            0%,
+            20%,
+            40%,
+            60%,
+            80%,
+            100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        .completed {
+            background-color: #8BC34A !important;
+            animation: checkmark 0.5s ease-in-out, bounce 0.8s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .list-group-item:nth-child(odd) {
+            background-color: #f0f0f0;
+        }
+        
+        .list-group-item:nth-child(even) {
+            background-color: #e0e0e0;
+        }
+        
+        .list-group-item {
+            border: none;
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+            font-size: 18px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        
+        .list-group-item:hover {
+            background-color: #d0d0d0;
+        }
+        
+        .list-group-item.completed::before {
+            content: '\2713';
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            color: #28a745;
+            font-size: 20px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background-color: #343a40;
+            color: white;
+        }
+        
+        .navbar-brand img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-outline-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #0056b3;
+        }
+        
+        .table {
+            background-color: #fff;
+        }
+        
+        .table th,
+        .table td {
+            border: 1px solid #dee2e6;
+        }
+        
+        .table thead th {
+            background-color: #343a40;
+            color: white;
+        }
+        
+        .table th,
+        .table td {
+            padding: 12px;
+        }
+        
+        .modal-content {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .add-task-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+        }
+        
+        .add-task-btn i {
+            font-size: 24px;
+        }
+        
+        .edit-icons i,
+        .delete-icon i {
+            font-size: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .edit-icons i:hover {
+            color: #007bff;
+        }
+        
+        .delete-icon i:hover {
+            color: #dc3545;
+        }
+        
+        .modal-dialog {
+            max-width: 400px;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .form-label {
+            font-weight: bold;
+        }
+        
+        .form-control {
+            border-radius: 5px;
+        }
+        
+        .btn-close {
+            color: #000;
+        }
+        
+        .btn-close:hover {
+            color: #000;
+        }
+        
+        .modal-footer {
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            background-color: #343a40;
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .card-body {
+            padding: 0;
+        }
+        
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 15px;
+        }
+        
+        .list-group-item {
+            border: none;
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+        
+        .list-group-item:last-child {
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .list-group-item .actions {
+            font-size: 20px;
+        }
+        
+        .list-group-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .list-group-item+.list-group-item {
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .btn-primary,
+        .btn-secondary {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .btn-primary:hover,
+        .btn-secondary:hover {
+            transform: scale(1.05);
+        }
+        
+        .add-task-btn {
+            margin-right: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .completed {
+            background-color: #d4edda !important;
+        }
+        
+        .completed::before {
+            animation: checkmark 0.5s ease-in-out;
+        }
+        
+        @keyframes checkmark {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a href="#" class="navbar-brand">
+                <img src="assets/pr_logo.jpg" alt="brand logo">
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav">
+                    <a href="#" class="nav-item nav-link active">ToDo List App</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-outline-primary add-task-btn" onclick="showAddTaskModal()"><i class="bi bi-plus"></i> Add Task</button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Task List</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group" id="taskList">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addTaskModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+        <form id="taskInputForm">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTaskModalLabel">Add Task</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="addTaskTextArea" class="form-label">Task/Description</label>
+                            <textarea class="form-control" id="addTaskTextArea" name="taskDescription" rows="3" placeholder="Add Your Task/Description" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addTaskResponsible" class="form-label">Responsible</label>
+                            <input type="text" class="form-control" id="addTaskResponsible" name="taskResponsible" placeholder="Add Responsible Person's Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addETA" class="form-label">ETA</label>
+                            <input type="datetime-local" class="form-control" id="addETA" name="taskETA" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="addTask()">Add Task</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal fade" id="updateTaskModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateTaskModalLabel" aria-hidden="true">
+        <form id="taskUpdateForm">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateTaskModalLabel">Edit Task</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="editTaskTextArea" class="form-label">Task/Description</label>
+                            <textarea class="form-control" id="editTaskTextArea" name="taskDescription" rows="3" placeholder="Add Your Task/Description" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTaskResponsible" class="form-label">Responsible</label>
+                            <input type="text" class="form-control" id="editTaskResponsible" name="taskResponsible" placeholder="Add Responsible Person's Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editETA" class="form-label">ETA</label>
+                            <input type="datetime-local" class="form-control" id="editETA" name="taskETA" required>
+                        </div>
+                        <input type="hidden" id="editIndex" name="taskIndex">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="updateTask()">Update Task</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="bootstrap-5.3.0-dist/js/bootstrap.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script>
+        createHtmlfromStorage();
+
+        function showAddTaskModal() {
+            $("#addTaskModal").modal('show');
+        }
+
+        function addTask() {
+            var dataArr = $("#taskInputForm").serializeArray();
+            var taskObject = {};
+
+            for (var i in dataArr) {
+                var name = dataArr[i]['name'];
+                var value = dataArr[i]['value'];
+                taskObject[name] = value;
+            }
+
+            var storageObjectArr = localStorage.getItem('taskStorage');
+            storageObjectArr = storageObjectArr ? JSON.parse(storageObjectArr) : [];
+
+            storageObjectArr.push(taskObject);
+            localStorage.setItem('taskStorage', JSON.stringify(storageObjectArr));
+
+            createHtmlfromStorage();
+            $("#addTaskModal").modal('hide');
+        }
+
+        function createHtmlfromStorage() {
+            var storageObjectArr = JSON.parse(localStorage.getItem('taskStorage'));
+            var taskList = document.getElementById("taskList");
+
+            while (taskList.firstChild) {
+                taskList.removeChild(taskList.firstChild);
+            }
+
+            if (storageObjectArr && storageObjectArr.length > 0) {
+                for (var i = 0; i < storageObjectArr.length; i++) {
+                    var date = new Date(storageObjectArr[i]['taskETA']);
+                    var listItem = document.createElement("li");
+                    listItem.classList.add("list-group-item");
+
+                    if (storageObjectArr[i]['completed']) {
+                        listItem.classList.add("completed");
+                    }
+
+                    listItem.style.cursor = "pointer";
+
+                    var listItemContent = `
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="task-description">${storageObjectArr[i]['taskDescription']}</div>
+                                <div class="task-responsible">Responsible: ${storageObjectArr[i]['taskResponsible']}</div>
+                                <div class="task-eta">ETA: ${date.toLocaleString()}</div>
+                            </div>
+                            <div class="col-md-4 text-end actions">
+                                <i class="bi bi-check-circle edit-icons" onclick="markCompleted(${i})"></i>
+                                <i class="bi bi-pencil edit-icons" onclick="editTask(${i})"></i>
+                                <i class="bi bi-trash delete-icon" onclick="deleteTask(${i})"></i>
+                            </div>
+                        </div>
+                    `;
+
+                    listItem.innerHTML = listItemContent;
+                    taskList.appendChild(listItem);
+                }
+            } else {
+                var noTasksMessage = document.createElement("li");
+                noTasksMessage.classList.add("list-group-item");
+                noTasksMessage.innerText = "No tasks added yet";
+                taskList.appendChild(noTasksMessage);
+            }
+        }
+
+        function editTask(index) {
+            var storageObjectArr = JSON.parse(localStorage.getItem('taskStorage'));
+
+            if (index >= 0 && index < storageObjectArr.length) {
+                var taskToEdit = storageObjectArr[index];
+
+                $("#editTaskTextArea").val(taskToEdit['taskDescription']);
+                $("#editTaskResponsible").val(taskToEdit['taskResponsible']);
+                var eta = new Date(taskToEdit['taskETA']).toISOString().slice(0, 16);
+                $("#editETA").val(eta);
+                $("#editIndex").val(index);
+
+                $("#updateTaskModal").modal('show');
+            }
+        }
+
+        function updateTask() {
+            $("#updateTaskModal").modal('hide');
+
+            var dataArr = $("#taskUpdateForm").serializeArray();
+            var taskObject = {};
+
+            for (var i in dataArr) {
+                var name = dataArr[i]['name'];
+                var value = dataArr[i]['value'];
+                taskObject[name] = value;
+            }
+
+            var storageObjectArr = JSON.parse(localStorage.getItem('taskStorage'));
+            var index = $("#editIndex").val();
+
+            if (index >= 0 && index < storageObjectArr.length) {
+                storageObjectArr[index] = taskObject;
+                localStorage.setItem('taskStorage', JSON.stringify(storageObjectArr));
+                createHtmlfromStorage();
+            }
+        }
+
+        function deleteTask(index) {
+            var storageObjectArr = JSON.parse(localStorage.getItem('taskStorage'));
+
+            if (index >= 0 && index < storageObjectArr.length) {
+                storageObjectArr.splice(index, 1);
+                localStorage.setItem('taskStorage', JSON.stringify(storageObjectArr));
+                createHtmlfromStorage();
+            }
+        }
+
+        function markCompleted(index) {
+            var storageObjectArr = JSON.parse(localStorage.getItem('taskStorage'));
+
+            if (index >= 0 && index < storageObjectArr.length) {
+                storageObjectArr[index]['completed'] = true;
+                localStorage.setItem('taskStorage', JSON.stringify(storageObjectArr));
+                createHtmlfromStorage();
+            }
+        }
+    </script>
+</body>
+
+</html>
